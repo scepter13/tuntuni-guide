@@ -16,7 +16,7 @@ const diff=(a,b)=>dnum(b)-dnum(a);                              // days from a t
 const hm=(ms)=>{const d=kst(ms);return String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0')};
 const ADMIT='2026-11-30', SURG='2026-12-01';
 /* AI 프록시 주소 (Cloudflare Worker). 비어 있으면 'AI 연결 준비 중' 상태로 사이트 안 정보만 찾아줘요. */
-const AI_URL='';
+const AI_URL='https://tuntuni-ai.tuntuni-guide.workers.dev';
 
 /* ---------- navigation ---------- */
 function go(p){

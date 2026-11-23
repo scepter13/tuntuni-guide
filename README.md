@@ -21,6 +21,6 @@
 ## AI 채팅 (worker/)
 - 사이트는 `app.js` 맨 위 `AI_URL`로 질문을 보냅니다. 비어 있으면 'AI 연결 준비 중' 상태로 사이트 안 정보만 찾아 보여줘요.
 - `worker/worker.js` = Cloudflare Worker 프록시 (Gemini `gemini-3.5-flash-lite`, 무료 등급). 사이트 주소에서 온 요청만 허용, IP별 분당 6회·하루 80회, 전체 분당 12회, 질문 500자 제한. `data.js`를 읽어 답변 근거로 씀.
-- 배포: `cd worker && npx wrangler login && npx wrangler secret put GEMINI_API_KEY && npx wrangler deploy` → 나온 주소를 `AI_URL`에 넣고 `sw.js` 캐시 숫자 올리기.
+- 배포됨: https://tuntuni-ai.tuntuni-guide.workers.dev (Cloudflare Worker `tuntuni-ai`). 다시 배포: `cd worker && CLOUDFLARE_API_TOKEN=... npx wrangler deploy` (키는 `wrangler secret put GEMINI_API_KEY`로만).
 - **API 키는 절대 이 저장소에 넣지 마세요** (Worker secret으로만).
 - Google 검색 그라운딩: 무료 등급에서 Gemini 3 이상 모델은 제공 안 됨(유료 전용) → 꺼 둠.
