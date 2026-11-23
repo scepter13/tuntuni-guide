@@ -17,7 +17,17 @@ const SRC = {
   blogDad: ['블로그: 남편 준비물', 'https://babyandme.tistory.com/entry/%EC%A0%9C%EC%99%95%EC%A0%88%EA%B0%9C%EC%82%B0%EB%AA%A8%EC%A4%80%EB%B9%84%EB%AC%BC'],
   blogDry: ['블로그: 남편이 본 입원 1일차', 'https://azurecourse.tistory.com/1742'],
   blogMeal: ['네이버 블로그: 남편 출산기', 'https://m.blog.naver.com/ninjoingan/223784361688'],
-  general: ['일반 정보 · 의료진 안내 우선', null]
+  general: ['일반 정보 · 의료진 안내 우선', null],
+  kdcaCs: ['질병관리청: 제왕절개술', 'https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=6244'],
+  kdcaGa: ['질병관리청: 전신마취(PCA)', 'https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=6565'],
+  kdcaBf: ['질병관리청: 모유 수유', 'https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=6586'],
+  amcPca: ['서울아산병원: 경막외 마취·PCA', 'https://www.amc.seoul.kr/asan/healthinfo/management/managementDetail.do?managementId=189'],
+  kuhPca: ['건국대병원: 통증 자가조절법', 'https://www.kuh.ac.kr/health/encyclo/encycloView.do?seq=96'],
+  mohwPb: ['보건복지부: 페인버스터 급여기준 설명', 'https://www.mohw.go.kr/board.es?act=view&bid=0030&list_no=1481885&mid=a10504000000&nPage=1&tag='],
+  dpPb: ['데일리팜: 병용 유지 (2024.7)', 'https://www.dailypharm.com/user/news/15487'],
+  chaPb: ['강남차병원: 페인버스터', 'https://gangnam.chamc.co.kr/health/guide/columnView.cha?idx=349&keyword=&menuCode=1740&page=1&search=UH_TITLE'],
+  mizPb: ['미즈메디병원: 페인버스터 Q&A', 'https://sports.khan.co.kr/article/201809040700013'],
+  afterpain: ['삼성미래여성병원: 훗배앓이', 'http://www.samsungmirae.co.kr/information/40?page=1&sod=asc&sop=and&sst=wr_hit']
 };
 
 /* 냠모 준비물 (pk) */
@@ -153,14 +163,15 @@ const LIFE = [
 /* 회복 가이드 (일반 정보) */
 const CARE = [
   ['😮‍💨 기침·웃을 때', '<b>베개나 손으로 배(수술 부위)를 감싸 누르고</b> 기침하면 덜 아파요.'],
-  ['🚶‍♀️ 첫 걷기', '의료진이 허락하면 <b>침대 옆으로 돌아누워 → 팔로 밀며 일어나기</b>. 처음엔 꼭 남편·간호사와 함께, 어지러우면 바로 앉기.'],
+  ['🚶‍♀️ 첫 걷기', '의료진이 허락하면 <b>침대 옆으로 돌아누워 → 팔로 밀며 일어나기</b>. 처음엔 꼭 남편·간호사와 함께, 어지러우면 바로 앉기. 조금씩 걸으면 <b>가스 배출</b>에도 도움이 돼요.'],
   ['🦵 다리 움직이기', '마취가 풀리면 누운 채로 <b>발목 까딱까딱</b>. 붓기·혈전 예방에 도움이 된다고 해요 (병원 안내 우선).'],
-  ['💊 통증', '통증은 <b>참지 말고 바로 말하기</b>. 진통제 맞은 시간은 기록 탭에 남겨두면 편해요.'],
+  ['💊 통증', '통증은 <b>참지 말고 바로 말하기</b>. 무통주사 버튼은 <b>움직이기·기침하기 전에 미리</b> 누르기 (효과까지 5분 이상 걸려요). 진통제 맞은 시간은 기록 탭에 남겨두면 편해요.'],
+  ['🌀 훗배앓이', '자궁이 줄어들며 <b>아랫배가 쥐어짜듯 아픈 것</b>은 흔한 증상. <b>수유할 때 더 심해질 수 있고</b>, 보통 3~4일 지나면 약해져요. 심하면 진통제 요청하기.'],
   ['💧 물·식사', '물과 식사 시작 시점은 <b>의료진 안내</b>대로. 처음엔 조금씩.'],
-  ['🤱 수유 자세', '수술 부위가 눌리지 않게 <b>옆구리에 끼는 자세(풋볼 자세)</b>나 베개를 배 위에 받치는 방법이 많이 쓰여요. 신생아실 간호사에게 도움 요청하기.'],
-  ['🚨 바로 알리기', '<b>열, 숨참, 심한 두통, 갑자기 심해진 통증, 출혈이 많거나 수술 부위가 붓고 진물</b>이 나면 바로 간호사 호출.']
+  ['🤱 수유 자세', '수술 부위가 눌리지 않게 <b>옆구리에 끼는 자세(풋볼 자세)</b>나 <b>옆으로 누운 자세</b>, 베개를 배 위에 받치는 방법이 많이 쓰여요. 신생아실 간호사에게 도움 요청하기.'],
+  ['🚨 바로 알리기', '<b>열, 숨참, 심한 두통, 갑자기 심해진 통증, 출혈이 많거나 수술 부위가 붓고 진물</b>이 나면 바로 간호사 호출. 무통주사 중 <b>너무 졸리거나 숨이 느려지면</b> 즉시 알리기.']
 ];
-const Q_SUGGEST = ['소변줄은 언제 빼나요?','물·식사는 언제부터 되나요?','진통제는 몇 시간 간격인가요?','샤워는 언제부터 가능한가요?','수술 부위 관리는 어떻게 하나요?','퇴원 예정일은 언제인가요?','중단해야 할 약이 있나요?','외래 진료는 언제 오나요?'];
+const Q_SUGGEST = ['무통주사는 정맥인가요, 경막외(등)인가요? 언제까지 하나요?','페인버스터를 쓸 수 있나요? 비용은 얼마인가요?','아플 때 추가 진통제(엉덩이 주사)는 어떻게 요청하나요?','항생제·자궁수축제는 언제까지 맞나요?','소변줄은 언제 빼나요?','물·식사는 언제부터 되나요?','진통제는 몇 시간 간격인가요?','샤워는 언제부터 가능한가요?','수술 부위 관리는 어떻게 하나요?','퇴원 예정일은 언제인가요?','중단해야 할 약이 있나요?','외래 진료는 언제 오나요?'];
 
 /* 남편 할 일 (dd) */
 const DAD = [

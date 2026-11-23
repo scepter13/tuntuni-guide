@@ -85,6 +85,15 @@ ul.clean{margin:6px 0;padding-left:20px}ul.clean li{margin:5px 0}
 .info dt{font-weight:800;margin-top:10px}.info dd{margin:2px 0 0}
 .tel{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line);text-decoration:none;color:var(--ink)}
 .tel:last-child{border-bottom:0}.tel span:last-child{font-weight:800;color:#C0604A}
+.tw{overflow-x:auto;margin:0 -4px}
+.cmp{width:100%;border-collapse:separate;border-spacing:0;font-size:14.5px;line-height:1.4}
+.cmp th{background:var(--peach2);padding:8px 6px;font-size:14.5px;text-align:left}
+.cmp th:first-child{background:transparent}
+.cmp th:nth-child(2){border-radius:10px 0 0 10px}.cmp th:last-child{border-radius:0 10px 10px 0;background:var(--mint2)}
+.cmp td{padding:8px 6px;vertical-align:top;border-bottom:1px dashed var(--line)}
+.cmp td:first-child{font-weight:800;white-space:nowrap;color:var(--sub);font-size:13.5px;padding-left:2px}
+.pain summary{background:var(--peach2);border-radius:18px}
+.pain[open] summary{border-radius:18px 18px 0 0}
 .warn{background:#FFF4E5;border-left:6px solid #FFC37A;border-radius:14px;padding:12px 14px;font-size:16px;margin:12px 0}
 .note{font-size:14px;color:var(--sub);background:#fff;border-radius:14px;padding:10px 12px;margin:12px 0}
 details{background:#fff;border-radius:18px;margin:10px 0;box-shadow:0 2px 0 var(--line)}
@@ -183,6 +192,24 @@ nav button.on .e{filter:none;opacity:1;transform:scale(1.1)}
 <section class="page" id="p-care">
   <h1>회복 가이드 · 질문 메모</h1>
   <div class="warn">아래 회복 요령은 <b>일반적인 제왕절개 회복 팁</b>이에요. 몸 상태는 사람마다 달라서 <b>의료진 안내가 항상 먼저</b>예요. 열, 심한 통증, 출혈이 많으면 바로 간호사 호출!</div>
+  <details class="pain" open><summary>💉 통증 조절 — 무통주사·페인버스터·엉덩이 주사</summary><div class="in">
+    <div class="tw"><table class="cmp">
+      <tr><th></th><th>무통주사 (PCA)</th><th>페인버스터</th></tr>
+      <tr><td>어디에</td><td><b>정맥</b>(수액줄) 또는 <b>경막외</b>(등)로 진통제가 계속 + 버튼 누르면 추가</td><td><b>수술 부위 근막 아래</b> 가는 관으로 국소마취제가 계속</td></tr>
+      <tr><td>얼마나</td><td>보통 <b>수술 후 2~3일</b></td><td>보통 <b>수술 후 이틀째</b> 드레싱 때 제거 (병원마다 다름)</td></tr>
+      <tr><td>효과</td><td><b>온몸</b>에 작용 · 버튼 효과까지 5분 이상</td><td><b>수술 부위만</b> · 마약성 진통제 사용을 줄이는 데 도움, 보통 무통주사와 <b>함께</b> 사용</td></tr>
+      <tr><td>부작용</td><td><b>구역·구토, 가려움</b>, 졸림, 소변 정체 등 → 말하면 약으로 조절</td><td>드물게 <b>관 빠짐·막힘</b>, 약이 조금 새어 나옴</td></tr>
+      <tr><td>보험</td><td>건강보험 적용</td><td><b>선별급여</b>(본인부담 80%) · 무통주사와 병용 가능</td></tr>
+    </table></div>
+    <ul class="clean">
+      <li>💉 <b>엉덩이 주사 = 추가 진통제(근육주사)</b> — 무통주사로 부족할 때 <b>간호사에게 요청</b></li>
+      <li>🛡️ <b>항생제</b> — 수술 후 <b>감염 예방</b>용. 주는 방법(수액·주사)과 기간은 병원 처방대로</li>
+      <li>🌀 <b>자궁수축제</b> — 자궁을 수축시켜 <b>출혈을 줄이는</b> 약. 맞는 동안 <b>아랫배가 쥐어짜듯</b> 아플 수 있어요 (훗배앓이)</li>
+      <li>⏱️ 무통주사 버튼은 <b>움직이기·기침 전에 미리</b> · 정해진 양만 나와서 자주 눌러도 과량 안 돼요</li>
+    </ul>
+    <p class="note" style="margin:8px 0 0">ℹ️ 일반 정보예요. 실제 약·방법은 <b>의료진 안내</b>를 따르고, <b>페인버스터 사용 여부·비용은 병원(원무팀·병동)에 확인</b>하세요.</p>
+    <span class="src">출처: <a href="https://www.amc.seoul.kr/asan/healthinfo/management/managementDetail.do?managementId=189" target="_blank" rel="noopener">서울아산병원</a> · <a href="https://www.kuh.ac.kr/health/encyclo/encycloView.do?seq=96" target="_blank" rel="noopener">건국대병원</a> · <a href="https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=6244" target="_blank" rel="noopener">질병관리청(제왕절개술)</a> · <a href="https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=6565" target="_blank" rel="noopener">질병관리청(PCA)</a> · <a href="https://gangnam.chamc.co.kr/health/guide/columnView.cha?idx=349&amp;keyword=&amp;menuCode=1740&amp;page=1&amp;search=UH_TITLE" target="_blank" rel="noopener">강남차병원</a> · <a href="https://sports.khan.co.kr/article/201809040700013" target="_blank" rel="noopener">미즈메디병원</a> · <a href="https://www.mohw.go.kr/board.es?act=view&amp;bid=0030&amp;list_no=1481885&amp;mid=a10504000000&amp;nPage=1&amp;tag=" target="_blank" rel="noopener">보건복지부</a> · <a href="https://www.dailypharm.com/user/news/15487" target="_blank" rel="noopener">데일리팜</a> · <a href="http://www.samsungmirae.co.kr/information/40?page=1&amp;sod=asc&amp;sop=and&amp;sst=wr_hit" target="_blank" rel="noopener">삼성미래여성병원</a></span>
+  </div></details>
   <div id="care-list"></div>
 
   <h2>❓ 회진 때 물어볼 질문</h2>
