@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#FFB4A2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="튼튼이">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>튼튼이 만나러 가는 길</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#FFF8F1; --card:#FFFFFF; --ink:#4A3F3A; --sub:#8A7B73; --line:#F1E4DA;
+  --peach:#FFB4A2; --peach2:#FFE3D8; --mint:#BDE0D1; --mint2:#E6F4EE;
+  --lav:#CDB4DB; --lav2:#F1E8F6; --butter:#FFF1C1; --sky:#DCEBFA;
+  --tab:68px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;
+  font-size:18px;line-height:1.55;word-break:keep-all}
+body{height:100vh;height:100dvh;overflow:hidden}
+#app{height:100vh;height:100dvh;display:flex;flex-direction:column}
+main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px calc(var(--tab) + 24px + env(safe-area-inset-bottom))}
+.page{display:none;max-width:560px;margin:0 auto}
+.page.on{display:block}
+h1{font-size:24px;margin:6px 0 10px}
+h2{font-size:21px;margin:22px 0 10px}
+h3{font-size:19px;margin:0 0 6px}
+p{margin:6px 0}
+small,.sm{font-size:14px;color:var(--sub)}
+b,strong{font-weight:800}
+a{color:#C0604A}
+.card{background:var(--card);border-radius:22px;padding:16px 16px;margin:12px 0;box-shadow:0 2px 0 var(--line)}
+.hero{background:linear-gradient(160deg,var(--peach2),var(--lav2));text-align:center;padding:20px 16px}
+.hero .big{font-size:56px;font-weight:900;line-height:1.1;margin:6px 0;color:#D9735E}
+.hero .lbl{font-size:18px;font-weight:700}
+.hero .sub2{font-size:16px;color:var(--sub)}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--butter);font-size:14px;font-weight:700;margin:2px 4px 2px 0}
+.pill.mint{background:var(--mint2)}.pill.lav{background:var(--lav2)}.pill.peach{background:var(--peach2)}.pill.sky{background:var(--sky)}
+.row{display:flex;gap:10px;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.today{background:var(--mint2);border-radius:18px;padding:14px;font-size:19px}
+.today b{color:#2E7D62}
+.btn{appearance:none;border:0;border-radius:16px;padding:14px 12px;font-size:18px;font-weight:800;background:var(--peach2);color:var(--ink);min-height:54px;width:100%;cursor:pointer}
+.btn:active{transform:scale(.97)}
+.btn.mint{background:var(--mint2)}.btn.lav{background:var(--lav2)}.btn.butter{background:var(--butter)}.btn.sky{background:var(--sky)}
+.btn.ghost{background:transparent;border:2px solid var(--line);font-weight:700}
+.btn.small{min-height:40px;padding:8px 12px;font-size:16px;width:auto}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;position:sticky;top:-14px;background:var(--bg);z-index:3;margin:0 -16px;padding-left:16px;padding-right:16px}
+.chip{flex:none;border:0;border-radius:999px;padding:10px 16px;font-size:17px;font-weight:800;background:#fff;color:var(--sub);box-shadow:0 1px 0 var(--line)}
+.chip.on{background:var(--peach);color:#fff}
+/* checklist */
+.ck{display:flex;gap:12px;align-items:flex-start;padding:12px 2px;border-bottom:1px dashed var(--line);cursor:pointer;user-select:none}
+.ck:last-child{border-bottom:0}
+.box{flex:none;width:30px;height:30px;border-radius:9px;border:2.5px solid var(--peach);display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;margin-top:1px}
+.ck.done .box{background:var(--peach)}
+.ck.done .box::after{content:"✓";font-weight:900}
+.ck.done .t{opacity:.5;text-decoration:line-through}
+.ck .t{flex:1}
+.ck .tip{display:block;font-size:15px;color:var(--sub);margin-top:2px}
+.src{font-size:12.5px;color:#B79A8C;display:inline-block;margin-top:3px}
+.src a{color:#B79A8C}
+.bar{height:12px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--peach),var(--lav));border-radius:99px;transition:width .3s}
+/* timeline */
+.tl{position:relative;padding-left:22px}
+.tl::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:4px;background:var(--line);border-radius:4px}
+.tli{position:relative;background:#fff;border-radius:18px;padding:14px;margin:0 0 12px;box-shadow:0 2px 0 var(--line)}
+.tli::before{content:"";position:absolute;left:-20px;top:20px;width:16px;height:16px;border-radius:50%;background:#fff;border:4px solid var(--line)}
+.tli.now{background:var(--peach2);box-shadow:0 0 0 3px var(--peach)}
+.tli.now::before{border-color:var(--peach);background:var(--peach)}
+.tli.past{opacity:.6}
+.tli .when{font-weight:900;font-size:17px;color:#C0604A}
+.tli ul{margin:6px 0 0;padding-left:20px}
+.tli li{margin:3px 0}
+.nowtag{float:right;background:var(--peach);color:#fff;border-radius:99px;font-size:13px;padding:2px 10px;font-weight:800}
+ul.clean{margin:6px 0;padding-left:20px}ul.clean li{margin:5px 0}
+.info dt{font-weight:800;margin-top:10px}.info dd{margin:2px 0 0}
+.tel{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line);text-decoration:none;color:var(--ink)}
+.tel:last-child{border-bottom:0}.tel span:last-child{font-weight:800;color:#C0604A}
+.warn{background:#FFF4E5;border-left:6px solid #FFC37A;border-radius:14px;padding:12px 14px;font-size:16px;margin:12px 0}
+.note{font-size:14px;color:var(--sub);background:#fff;border-radius:14px;padding:10px 12px;margin:12px 0}
+details{background:#fff;border-radius:18px;margin:10px 0;box-shadow:0 2px 0 var(--line)}
+details summary{list-style:none;padding:15px 16px;font-weight:800;font-size:18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"＋";color:var(--peach);font-size:22px}
+details[open] summary::after{content:"－"}
+details .in{padding:0 16px 14px}
+/* poster */
+.poster{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pc{border-radius:18px;padding:12px;font-size:15.5px}
+.pc h3{font-size:18px}
+.pc ul{margin:4px 0;padding-left:18px}
+/* log */
+.logbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:84px;font-size:17px}
+.logbtn .e{font-size:30px;line-height:1}
+.since{font-size:15px;color:var(--sub);text-align:center;margin-top:4px}
+.ent{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line);font-size:17px}
+.ent button{border:0;background:none;color:#C9A99A;font-size:22px;padding:0 6px}
+textarea,input[type=text]{width:100%;font:inherit;font-size:18px;border:2px solid var(--line);border-radius:14px;padding:12px;background:#fff;color:var(--ink)}
+.qi{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line)}
+.qi .t{flex:1}
+.qi button{border:0;background:none;color:#C9A99A;font-size:22px}
+/* husband */
+.phase{border-radius:22px;padding:14px 16px;margin:14px 0;background:#fff;box-shadow:0 2px 0 var(--line)}
+.phase>h3{display:flex;justify-content:space-between;align-items:center}
+.phase .cnt{font-size:14px;color:var(--sub);font-weight:700}
+.kw{background:linear-gradient(transparent 55%,var(--butter) 55%);font-weight:900}
+/* letter */
+.letter{background:#FFFDF8;border-radius:22px;padding:22px 20px;box-shadow:0 2px 0 var(--line);font-size:19px;line-height:1.8;white-space:pre-wrap}
+.letter .to{font-weight:900;font-size:21px;margin-bottom:10px}
+.letter .from{text-align:right;margin-top:14px;font-weight:800}
+.lock{text-align:center;padding:30px 16px}
+.lock .e{font-size:64px}
+.album{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.album .ph{aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--peach2);position:relative}
+.album img{width:100%;height:100%;object-fit:cover}
+.album .ph button{position:absolute;right:4px;top:4px;border:0;border-radius:99px;background:rgba(0,0,0,.4);color:#fff;width:26px;height:26px;font-size:14px}
+.empty{grid-column:1/-1;text-align:center;color:var(--sub);padding:24px 8px;background:#fff;border-radius:16px;border:2px dashed var(--line)}
+/* tabbar */
+nav{position:fixed;left:0;right:0;bottom:0;height:calc(var(--tab) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:rgba(255,255,255,.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;z-index:10}
+nav button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:13.5px;font-weight:800;color:#B3A39A;font-family:inherit}
+nav button .e{font-size:25px;line-height:1;filter:grayscale(.6);opacity:.75}
+nav button.on{color:#D9735E}
+nav button.on .e{filter:none;opacity:1;transform:scale(1.1)}
+.toast{position:fixed;left:50%;bottom:calc(var(--tab) + 20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;font-size:16px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:20;white-space:nowrap}
+.toast.on{opacity:.92}
+.center{text-align:center}
+.mt{margin-top:12px}
+</style>
+</head>
+<body>
+<div id="app">
+<main id="main">
+
+<!-- ================= 홈 ================= -->
+<section class="page on" id="p-home">
+  <div class="card hero">
+    <div class="lbl" id="h-lbl">튼튼이 만나기까지</div>
+    <div class="big" id="h-big">D-7</div>
+    <div class="sub2" id="h-sub">입원 11월 30일(월) · 수술 12월 1일(화)</div>
+  </div>
+  <div class="today" id="h-today"></div>
+  <div class="card" id="h-cheer" style="background:var(--lav2)"></div>
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><h3>챙길 것</h3><span class="sm" id="h-ckc"></span></div>
+    <div class="bar"><i id="h-ckbar" style="width:0"></i></div>
+    <div class="grid2 mt">
+      <button class="btn" onclick="go('mom','pack')">🎒 준비물 보기</button>
+      <button class="btn mint" onclick="go('mom','plan')">🗓️ 일정 보기</button>
+      <button class="btn lav" onclick="go('log')">🍼 기록하기</button>
+      <button class="btn butter" onclick="go('mom','care')">❓ 질문 메모</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>📞 바로 전화</h3>
+    <a class="tel" href="tel:0318203301"><span>분만실</span><span>031-820-3301</span></a>
+    <a class="tel" href="tel:0318203305"><span>신생아실</span><span>031-820-3305</span></a>
+    <a class="tel" href="tel:0318539115"><span>히아신스 산후조리원</span><span>031-853-9115</span></a>
+    <a class="tel" href="tel:16617500"><span>병원 대표</span><span>1661-7500</span></a>
+  </div>
+  <div class="note">📱 <b>홈 화면에 추가</b>하면 앱처럼 쓸 수 있어요. 아이폰: 사파리 아래 <b>공유 버튼 → 홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮ → 홈 화면에 추가</b>. 체크·기록·메모는 이 휴대폰에만 저장돼요.</div>
+</section>
+
+<!-- ================= 냠모 ================= -->
+<section class="page" id="p-mom">
+  <div class="chips" id="momchips">
+    <button class="chip on" data-s="pack">🎒 준비물</button>
+    <button class="chip" data-s="plan">🗓️ 일정</button>
+    <button class="chip" data-s="life">🏥 병원생활</button>
+    <button class="chip" data-s="care">💗 회복·질문</button>
+  </div>
+
+  <div class="sub" id="s-pack">
+    <h1>챙길 것 체크리스트</h1>
+    <p class="sm">탭하면 체크돼요. 병원 안내문 기준 + 많이 챙기는 것(<span class="pill sky">추천</span>)</p>
+    <div class="card"><div class="row" style="justify-content:space-between"><b>진행률</b><span class="sm" id="pk-c"></span></div><div class="bar mt"><i id="pk-bar" style="width:0"></i></div></div>
+    <div id="pack-list"></div>
+    <div class="note">🛒 산모 패드·소변통은 <b>병원 지하 1층 편의점</b> 또는 <b>2층 의료기상사</b>에서 살 수 있어요.<br>💊 먹는 약이 있다면 <b>약 + 처방전(10일분 정도)</b> 꼭 챙기기.</div>
+    <button class="btn ghost mt" onclick="resetCk('pk')">체크 모두 지우기</button>
+  </div>
+
+  <div class="sub" id="s-plan" style="display:none">
+    <h1>입원부터 조리원까지</h1>
+    <p class="sm">오늘 단계가 <span class="pill peach">지금</span>으로 표시돼요.</p>
+    <div class="tl" id="timeline"></div>
+    <div class="note">⏱️ 금식 시작 시간, 소변줄 제거, 식사 시작, 퇴원일은 <b>병동 간호사·담당 교수님 안내</b>가 우선이에요. 여기 적힌 회복 순서는 일반적인 흐름이에요.</div>
+  </div>
+
+  <div class="sub" id="s-life" style="display:none">
+    <h1>병원 생활 정보</h1>
+    <p class="sm">가톨릭대학교 의정부성모병원 안내문 내용이에요.</p>
+    <div id="life-list"></div>
+  </div>
+
+  <div class="sub" id="s-care" style="display:none">
+    <h1>회복 가이드 · 질문 메모</h1>
+    <div class="warn">아래 회복 요령은 <b>일반적인 제왕절개 회복 팁</b>이에요. 몸 상태는 사람마다 달라서 <b>의료진 안내가 항상 먼저</b>예요. 열, 심한 통증, 출혈이 많으면 바로 간호사 호출!</div>
+    <div id="care-list"></div>
+
+    <h2>❓ 회진 때 물어볼 질문</h2>
+    <div class="card">
+      <textarea id="q-in" rows="2" placeholder="궁금한 걸 적어두세요"></textarea>
+      <button class="btn mt" onclick="addQ()">메모 추가</button>
+      <p class="sm mt">눌러서 바로 추가:</p>
+      <div id="q-sug"></div>
+      <div id="q-list" class="mt"></div>
+    </div>
+
+    <h2>🛡️ 나를 빼고 나를 말하지 마세요</h2>
+    <p class="sm">병원 환자안전 안내 — 나를 지키는 4가지</p>
+    <div class="poster">
+      <div class="pc" style="background:var(--peach2)"><h3>🎒 가져오기</h3><ul><li>약 처방전, 먹는 약</li><li>인공삽입물 정보</li><li>신분증·등록카드·진료예약증</li></ul></div>
+      <div class="pc" style="background:var(--mint2)"><h3>🗣️ 말하기</h3><ul><li>알레르기·부작용·임신 가능성</li><li>과거 질환, 수술명</li><li>환자확인·손위생 했는지</li></ul></div>
+      <div class="pc" style="background:var(--lav2)"><h3>🙋 질문하기</h3><ul><li>수술·검사결과·치료계획</li><li>약 효능과 부작용</li><li>수술 전후 주의사항</li><li>중단해야 할 약, 권장사항</li></ul></div>
+      <div class="pc" style="background:var(--butter)"><h3>✅ 확인하기</h3><ul><li>약·수술 후 부작용/이상반응</li><li>내 약이 맞는지</li><li>수술 부위·검사가 맞는지</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 기록 ================= -->
+<section class="page" id="p-log">
+  <h1>튼튼이 기록 🍼</h1>
+  <p class="sm">버튼 한 번이면 지금 시각으로 기록돼요.</p>
+  <div class="grid2">
+    <div><button class="btn logbtn" onclick="logIt('feedL')"><span class="e">🤱</span>수유 (왼쪽)</button></div>
+    <div><button class="btn logbtn" onclick="logIt('feedR')"><span class="e">🤱</span>수유 (오른쪽)</button></div>
+    <div><button class="btn logbtn mint" onclick="logIt('bottle')"><span class="e">🍼</span>분유·젖병 수유</button></div>
+    <div><button class="btn logbtn lav" onclick="logIt('pump')"><span class="e">💧</span>유축함</button></div>
+    <div><button class="btn logbtn butter" onclick="logIt('pee')"><span class="e">💛</span>기저귀 소변</button></div>
+    <div><button class="btn logbtn butter" onclick="logIt('poo')"><span class="e">💩</span>기저귀 대변</button></div>
+    <div style="grid-column:1/-1"><button class="btn logbtn sky" onclick="logIt('pain')"><span class="e">💊</span>진통제 맞음/먹음</button></div>
+  </div>
+  <div class="card mt" id="log-since"></div>
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><h3 id="log-day">오늘 기록</h3>
+      <span><button class="btn small ghost" onclick="logDay(-1)">◀</button> <button class="btn small ghost" onclick="logDay(1)">▶</button></span></div>
+    <div id="log-list"></div>
+  </div>
+  <div class="note">진통제 간격·용량은 꼭 간호사 안내를 따르세요. 이 기록은 "언제 마지막으로 맞았지?"를 기억하기 위한 메모예요.</div>
+</section>
+
+<!-- ================= 남편 ================= -->
+<section class="page" id="p-dad">
+  <h1>남편 할 일 💪</h1>
+  <p class="sm">키워드만 보고 체크! 작은 글씨는 출처예요.</p>
+  <div class="card"><div class="row" style="justify-content:space-between"><b>전체 진행률</b><span class="sm" id="dd-c"></span></div><div class="bar mt"><i id="dd-bar" style="width:0"></i></div></div>
+  <div class="chips" id="dadchips"></div>
+  <div id="dad-list"></div>
+  <div class="note">ℹ️ 지원금·휴가 내용은 2026년 11월 기준 정부24·복지로·법령 안내를 요약한 거예요. 신청 전에 링크에서 한 번 더 확인하세요. 의료 관련 팁은 일반적인 후기이고, 병원·의료진 안내가 우선이에요.</div>
+</section>
+
+<!-- ================= 편지 ================= -->
+<section class="page" id="p-letter">
+  <h1>💌 남편의 편지</h1>
+  <div id="letter-box"></div>
+  <h2>📸 튼튼이 앨범</h2>
+  <p class="sm">사진은 이 휴대폰 안에만 저장돼요 (인터넷에 올라가지 않아요).</p>
+  <div class="album" id="album"></div>
+  <label class="btn mint mt" style="display:flex;align-items:center;justify-content:center">📷 사진 추가<input type="file" accept="image/*" multiple id="ph-in" style="display:none"></label>
+</section>
+
+</main>
+
+<nav id="nav">
+  <button data-p="home" class="on"><span class="e">🏠</span>홈</button>
+  <button data-p="mom"><span class="e">🤰</span>냠모</button>
+  <button data-p="log"><span class="e">🍼</span>기록</button>
+  <button data-p="dad"><span class="e">💪</span>남편</button>
+  <button data-p="letter"><span class="e">💌</span>편지</button>
+</nav>
+<div class="toast" id="toast"></div>
+</div>
+<script src="letter.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
