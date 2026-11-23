@@ -15,7 +15,6 @@ const dnum=(s)=>{const [y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d)
 const diff=(a,b)=>dnum(b)-dnum(a);                              // days from a to b
 const hm=(ms)=>{const d=kst(ms);return String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0')};
 const ADMIT='2026-11-30', SURG='2026-12-01';
-const UNLOCK=Date.parse('2026-11-30T21:00:00Z'); // 2026-12-01 06:00 KST
 
 /* ---------- navigation ---------- */
 function go(p,sub){
@@ -24,7 +23,6 @@ function go(p,sub){
   if(p==='mom'&&sub)momSub(sub);
   $('#main').scrollTop=0;
   if(p==='home')renderHome();
-  if(p==='letter')renderLetter();
 }
 window.go=go;
 $$('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
@@ -76,14 +74,12 @@ function renderHome(){
   let lbl,big,sub;
   if(toA>0){lbl='튼튼이 만나기까지';big='D-'+toS;sub=`입원까지 D-${toA} · 11월 30일(월) 오후 2~4시`;}
   else if(toA===0){lbl='오늘 입원해요 🏥';big='D-1';sub='튼튼이는 내일 만나요 · 신분증 챙기기';}
-  else if(toS===0){lbl='튼튼이 생일 🎂';big='D-DAY';sub='냠모, 정말 수고했어요';}
-  else{lbl='튼튼이 태어난 지';big=(1-toS)+'일째';sub='2026년 12월 1일 생 💗';}
+  else if(toS===0){lbl='오늘 수술하는 날';big='D-DAY';sub='12월 1일(화) · 신생아실 면회 오전 11:00~11:30';}
+  else{lbl='튼튼이 태어난 지';big=(1-toS)+'일째';sub='2026년 12월 1일 출생';}
   $('#h-lbl').textContent=lbl;$('#h-big').textContent=big;$('#h-sub').textContent=sub;
   let td=TODAY[t];
-  if(!td) td = toA>0 ? '오늘은 <b>준비물 체크리스트</b>를 한번 훑어보기' : '냠모, 오늘도 <b>푹 쉬기</b> 🌙 튼튼이 기록도 잊지 말기';
+  if(!td) td = toA>0 ? '오늘은 <b>준비물 체크리스트</b>를 한번 훑어보기' : '수유·기저귀·진통제는 <b>기록 탭</b>에 남겨두기';
   $('#h-today').innerHTML='📌 <b>오늘 할 일</b><br>'+td;
-  const ch=(window.LETTER&&LETTER.cheers&&LETTER.cheers.length)?LETTER.cheers:['냠모 화이팅!'];
-  $('#h-cheer').innerHTML='<div class="sm">💬 남편의 한마디</div><div style="font-size:19px;font-weight:700;margin-top:4px">'+esc(ch[((dnum(t)%ch.length)+ch.length)%ch.length])+'</div>';
   progress();
 }
 
@@ -135,29 +131,8 @@ function renderLog(){
 }
 setInterval(()=>{if($('#p-log').classList.contains('on'))renderLog()},30000);
 
-/* ---------- letter ---------- */
-function renderLetter(){
-  const L=window.LETTER||{title:'',body:'',from:''};
-  const preview=/[?&]letter=preview/.test(location.search);
-  if(Date.now()>=UNLOCK||preview){
-    $('#letter-box').innerHTML=`<div class="letter"><div class="to">${esc(L.title)}</div>${esc(L.body)}<div class="from">${esc(L.from)}</div></div>`+(preview&&Date.now()<UNLOCK?'<p class="sm center">미리보기 모드 (냠모 화면에서는 아직 잠겨 있어요)</p>':'');
-  }else{
-    const ms=UNLOCK-Date.now(),d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);
-    $('#letter-box').innerHTML=`<div class="card lock"><div class="e">🔒💌</div><h3>수술하는 날 아침에 열려요</h3><p>12월 1일(화) 오전 6시</p><p class="sm">남은 시간: ${d>0?d+'일 ':''}${h}시간 ${m}분</p></div>`;
-  }
-}
-
-/* ---------- album (local only) ---------- */
-let AL=LS.get('album',[]);
-function renderAlbum(){
-  $('#album').innerHTML=AL.length?AL.map((src,i)=>`<div class="ph"><img src="${src}" alt="튼튼이 사진 ${i+1}"><button data-del="${i}" aria-label="삭제">✕</button></div>`).join(''):'<div class="empty">🍼 튼튼이 첫 사진을 여기에 담아요<br><span class="sm">아래 버튼으로 추가</span></div>';
-  $$('#album [data-del]').forEach(b=>b.onclick=()=>{if(!confirm('사진을 지울까요?'))return;AL.splice(+b.dataset.del,1);LS.set('album',AL);renderAlbum()});
-}
-function shrink(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const M=900,s=Math.min(1,M/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.78))};im.onerror=rej;im.src=r.result};r.onerror=rej;r.readAsDataURL(file)})}
-$('#ph-in').onchange=async e=>{for(const f of e.target.files){try{const d=await shrink(f);AL.push(d);if(!LS.set('album',AL)){AL.pop();break}}catch(_){toast('사진을 불러오지 못했어요')}}e.target.value='';renderAlbum()};
-
 /* ---------- init ---------- */
-renderPack();renderDad();renderTimeline();renderLife();renderQ();renderLog();renderAlbum();renderHome();renderLetter();
-const h=location.hash.replace('#','');if(['home','mom','log','dad','letter'].includes(h))go(h);
+renderPack();renderDad();renderTimeline();renderLife();renderQ();renderLog();renderHome();
+const h=location.hash.replace('#','');if(['home','mom','log','dad','pack'].includes(h))go(h);
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
