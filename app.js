@@ -17,21 +17,14 @@ const hm=(ms)=>{const d=kst(ms);return String(d.getUTCHours()).padStart(2,'0')+'
 const ADMIT='2026-11-30', SURG='2026-12-01';
 
 /* ---------- navigation ---------- */
-function go(p,sub){
+function go(p){
   $$('.page').forEach(e=>e.classList.toggle('on',e.id==='p-'+p));
   $$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
-  if(p==='mom'&&sub)momSub(sub);
   $('#main').scrollTop=0;
   if(p==='home')renderHome();
 }
 window.go=go;
 $$('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
-function momSub(s){
-  $$('#momchips .chip').forEach(c=>c.classList.toggle('on',c.dataset.s===s));
-  $$('#p-mom .sub').forEach(e=>e.style.display=e.id==='s-'+s?'block':'none');
-  $('#main').scrollTop=0;
-}
-$$('#momchips .chip').forEach(c=>c.onclick=()=>momSub(c.dataset.s));
 
 /* ---------- source links ---------- */
 function srcHtml(keys){
@@ -90,6 +83,7 @@ function renderTimeline(){
     const now=t>=s.from&&t<=s.to, past=t>s.to;
     return `<div class="tli${now?' now':''}${past?' past':''}">${now?'<span class="nowtag">지금</span>':''}<div class="when">${s.when}</div><h3>${s.title}</h3><ul>${s.li.map(x=>'<li>'+x+'</li>').join('')}</ul></div>`;
   }).join('');
+  $$('#timeline .tli').forEach(el=>el.onclick=e=>{if(e.target.closest('a'))return;if(!el.classList.contains('now'))el.classList.toggle('open')});
 }
 
 /* ---------- life / care ---------- */
@@ -133,6 +127,6 @@ setInterval(()=>{if($('#p-log').classList.contains('on'))renderLog()},30000);
 
 /* ---------- init ---------- */
 renderPack();renderDad();renderTimeline();renderLife();renderQ();renderLog();renderHome();
-const h=location.hash.replace('#','');if(['home','mom','log','dad','pack'].includes(h))go(h);
+const h=location.hash.replace('#','');if(['home','pack','life','care','log','dad'].includes(h))go(h);
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();

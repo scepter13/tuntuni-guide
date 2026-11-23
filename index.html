@@ -76,6 +76,7 @@ a{color:#C0604A}
 .tli.now{background:var(--peach2);box-shadow:0 0 0 3px var(--peach)}
 .tli.now::before{border-color:var(--peach);background:var(--peach)}
 .tli.past{opacity:.6}
+.tli{cursor:pointer}.tli:not(.now):not(.open) ul{display:none}.tli:not(.now) .when::after{content:" ▾";color:var(--sub)}.tli.open .when::after{content:" ▴"}
 .tli .when{font-weight:900;font-size:17px;color:#C0604A}
 .tli ul{margin:6px 0 0;padding-left:20px}
 .tli li{margin:3px 0}
@@ -114,8 +115,8 @@ textarea,input[type=text]{width:100%;font:inherit;font-size:18px;border:2px soli
 .kw{background:linear-gradient(transparent 55%,var(--butter) 55%);font-weight:900}
 /* tabbar */
 nav{position:fixed;left:0;right:0;bottom:0;height:calc(var(--tab) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:rgba(255,255,255,.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;z-index:10}
-nav button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:13.5px;font-weight:800;color:#B3A39A;font-family:inherit}
-nav button .e{font-size:25px;line-height:1;filter:grayscale(.6);opacity:.75}
+nav button{flex:1 1 0;min-width:0;padding:0 1px;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:12.5px;letter-spacing:-.4px;white-space:nowrap;font-weight:800;color:#B3A39A;font-family:inherit}
+nav button .e{font-size:23px;line-height:1;filter:grayscale(.6);opacity:.75}
 nav button.on{color:#D9735E}
 nav button.on .e{filter:none;opacity:1;transform:scale(1.1)}
 .toast{position:fixed;left:50%;bottom:calc(var(--tab) + 20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;font-size:16px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:20;white-space:nowrap}
@@ -136,14 +137,18 @@ nav button.on .e{filter:none;opacity:1;transform:scale(1.1)}
     <div class="sub2" id="h-sub">입원 11월 30일(월) · 수술 12월 1일(화)</div>
   </div>
   <div class="today" id="h-today"></div>
+  <h2 style="margin-top:18px">🗓️ 입원부터 조리원까지</h2>
+  <p class="sm">오늘 단계는 <span class="pill peach">지금</span> · 다른 날은 탭하면 펼쳐져요.</p>
+  <div class="tl" id="timeline"></div>
+  <div class="note">⏱️ 금식 시작 시간, 소변줄 제거, 식사 시작, 퇴원일은 <b>병동 간호사·담당 교수님 안내</b>가 우선이에요. 회복 순서는 일반적인 흐름이에요.</div>
   <div class="card">
     <div class="row" style="justify-content:space-between"><h3>챙길 것</h3><span class="sm" id="h-ckc"></span></div>
     <div class="bar"><i id="h-ckbar" style="width:0"></i></div>
     <div class="grid2 mt">
       <button class="btn" onclick="go('pack')">🎒 준비물 보기</button>
-      <button class="btn mint" onclick="go('mom','plan')">🗓️ 일정 보기</button>
+      <button class="btn mint" onclick="go('life')">🏥 병원생활</button>
       <button class="btn lav" onclick="go('log')">🍼 기록하기</button>
-      <button class="btn butter" onclick="go('mom','care')">❓ 질문 메모</button>
+      <button class="btn butter" onclick="go('care')">❓ 질문 메모</button>
     </div>
   </div>
   <div class="card">
@@ -156,49 +161,46 @@ nav button.on .e{filter:none;opacity:1;transform:scale(1.1)}
   <div class="note">📱 <b>홈 화면에 추가</b>하면 앱처럼 쓸 수 있어요. 아이폰: 사파리 아래 <b>공유 버튼 → 홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮ → 홈 화면에 추가</b>. 체크·기록·메모는 이 휴대폰에만 저장돼요.</div>
 </section>
 
-<!-- ================= 냠모 ================= -->
-<section class="page" id="p-mom">
-  <div class="chips" id="momchips">
-    <button class="chip on" data-s="plan">🗓️ 일정</button>
-    <button class="chip" data-s="life">🏥 병원생활</button>
-    <button class="chip" data-s="care">💗 회복·질문</button>
+<!-- ================= 준비물 ================= -->
+<section class="page" id="p-pack">
+  <h1>🎒 같이 챙기는 준비물</h1>
+  <p class="sm">남편과 냠모가 같이 보면서 챙기는 목록이에요. 체크는 각자 휴대폰에 따로 저장돼요.</p>
+  <p class="sm">탭하면 체크돼요. 병원 안내문 기준 + 많이 챙기는 것(<span class="pill sky">추천</span>)</p>
+  <div class="card"><div class="row" style="justify-content:space-between"><b>진행률</b><span class="sm" id="pk-c"></span></div><div class="bar mt"><i id="pk-bar" style="width:0"></i></div></div>
+  <div id="pack-list"></div>
+  <div class="note">🛒 산모 패드·소변통은 <b>병원 지하 1층 편의점</b> 또는 <b>2층 의료기상사</b>에서 살 수 있어요.<br>💊 먹는 약이 있다면 <b>약 + 처방전(10일분 정도)</b> 꼭 챙기기.</div>
+  <button class="btn ghost mt" onclick="resetCk('pk')">체크 모두 지우기</button>
+</section>
+
+<!-- ================= 병원생활 ================= -->
+<section class="page" id="p-life">
+  <h1>병원 생활 정보</h1>
+  <p class="sm">가톨릭대학교 의정부성모병원 안내문 내용이에요.</p>
+  <div id="life-list"></div>
+</section>
+
+<!-- ================= 회복·질문 ================= -->
+<section class="page" id="p-care">
+  <h1>회복 가이드 · 질문 메모</h1>
+  <div class="warn">아래 회복 요령은 <b>일반적인 제왕절개 회복 팁</b>이에요. 몸 상태는 사람마다 달라서 <b>의료진 안내가 항상 먼저</b>예요. 열, 심한 통증, 출혈이 많으면 바로 간호사 호출!</div>
+  <div id="care-list"></div>
+
+  <h2>❓ 회진 때 물어볼 질문</h2>
+  <div class="card">
+    <textarea id="q-in" rows="2" placeholder="궁금한 걸 적어두세요"></textarea>
+    <button class="btn mt" onclick="addQ()">메모 추가</button>
+    <p class="sm mt">눌러서 바로 추가:</p>
+    <div id="q-sug"></div>
+    <div id="q-list" class="mt"></div>
   </div>
 
-  <div class="sub" id="s-plan">
-    <h1>입원부터 조리원까지</h1>
-    <p class="sm">오늘 단계가 <span class="pill peach">지금</span>으로 표시돼요.</p>
-    <div class="tl" id="timeline"></div>
-    <div class="note">⏱️ 금식 시작 시간, 소변줄 제거, 식사 시작, 퇴원일은 <b>병동 간호사·담당 교수님 안내</b>가 우선이에요. 여기 적힌 회복 순서는 일반적인 흐름이에요.</div>
-  </div>
-
-  <div class="sub" id="s-life" style="display:none">
-    <h1>병원 생활 정보</h1>
-    <p class="sm">가톨릭대학교 의정부성모병원 안내문 내용이에요.</p>
-    <div id="life-list"></div>
-  </div>
-
-  <div class="sub" id="s-care" style="display:none">
-    <h1>회복 가이드 · 질문 메모</h1>
-    <div class="warn">아래 회복 요령은 <b>일반적인 제왕절개 회복 팁</b>이에요. 몸 상태는 사람마다 달라서 <b>의료진 안내가 항상 먼저</b>예요. 열, 심한 통증, 출혈이 많으면 바로 간호사 호출!</div>
-    <div id="care-list"></div>
-
-    <h2>❓ 회진 때 물어볼 질문</h2>
-    <div class="card">
-      <textarea id="q-in" rows="2" placeholder="궁금한 걸 적어두세요"></textarea>
-      <button class="btn mt" onclick="addQ()">메모 추가</button>
-      <p class="sm mt">눌러서 바로 추가:</p>
-      <div id="q-sug"></div>
-      <div id="q-list" class="mt"></div>
-    </div>
-
-    <h2>🛡️ 나를 빼고 나를 말하지 마세요</h2>
-    <p class="sm">병원 환자안전 안내 — 나를 지키는 4가지</p>
-    <div class="poster">
-      <div class="pc" style="background:var(--peach2)"><h3>🎒 가져오기</h3><ul><li>약 처방전, 먹는 약</li><li>인공삽입물 정보</li><li>신분증·등록카드·진료예약증</li></ul></div>
-      <div class="pc" style="background:var(--mint2)"><h3>🗣️ 말하기</h3><ul><li>알레르기·부작용·임신 가능성</li><li>과거 질환, 수술명</li><li>환자확인·손위생 했는지</li></ul></div>
-      <div class="pc" style="background:var(--lav2)"><h3>🙋 질문하기</h3><ul><li>수술·검사결과·치료계획</li><li>약 효능과 부작용</li><li>수술 전후 주의사항</li><li>중단해야 할 약, 권장사항</li></ul></div>
-      <div class="pc" style="background:var(--butter)"><h3>✅ 확인하기</h3><ul><li>약·수술 후 부작용/이상반응</li><li>내 약이 맞는지</li><li>수술 부위·검사가 맞는지</li></ul></div>
-    </div>
+  <h2>🛡️ 나를 빼고 나를 말하지 마세요</h2>
+  <p class="sm">병원 환자안전 안내 — 나를 지키는 4가지</p>
+  <div class="poster">
+    <div class="pc" style="background:var(--peach2)"><h3>🎒 가져오기</h3><ul><li>약 처방전, 먹는 약</li><li>인공삽입물 정보</li><li>신분증·등록카드·진료예약증</li></ul></div>
+    <div class="pc" style="background:var(--mint2)"><h3>🗣️ 말하기</h3><ul><li>알레르기·부작용·임신 가능성</li><li>과거 질환, 수술명</li><li>환자확인·손위생 했는지</li></ul></div>
+    <div class="pc" style="background:var(--lav2)"><h3>🙋 질문하기</h3><ul><li>수술·검사결과·치료계획</li><li>약 효능과 부작용</li><li>수술 전후 주의사항</li><li>중단해야 할 약, 권장사항</li></ul></div>
+    <div class="pc" style="background:var(--butter)"><h3>✅ 확인하기</h3><ul><li>약·수술 후 부작용/이상반응</li><li>내 약이 맞는지</li><li>수술 부위·검사가 맞는지</li></ul></div>
   </div>
 </section>
 
@@ -234,26 +236,16 @@ nav button.on .e{filter:none;opacity:1;transform:scale(1.1)}
   <div class="note">ℹ️ 지원금·휴가 내용은 2026년 11월 기준 정부24·복지로·법령 안내를 요약한 거예요. 신청 전에 링크에서 한 번 더 확인하세요. 의료 관련 팁은 일반적인 후기이고, 병원·의료진 안내가 우선이에요.</div>
 </section>
 
-<!-- ================= 준비물 ================= -->
-  <section class="page" id="p-pack">
-  <h1>🎒 같이 챙기는 준비물</h1>
-  <p class="sm">남편과 냠모가 같이 보면서 챙기는 목록이에요. 체크는 각자 휴대폰에 따로 저장돼요.</p>
-  <p class="sm">탭하면 체크돼요. 병원 안내문 기준 + 많이 챙기는 것(<span class="pill sky">추천</span>)</p>
-  <div class="card"><div class="row" style="justify-content:space-between"><b>진행률</b><span class="sm" id="pk-c"></span></div><div class="bar mt"><i id="pk-bar" style="width:0"></i></div></div>
-  <div id="pack-list"></div>
-  <div class="note">🛒 산모 패드·소변통은 <b>병원 지하 1층 편의점</b> 또는 <b>2층 의료기상사</b>에서 살 수 있어요.<br>💊 먹는 약이 있다면 <b>약 + 처방전(10일분 정도)</b> 꼭 챙기기.</div>
-  <button class="btn ghost mt" onclick="resetCk('pk')">체크 모두 지우기</button>
-  </section>
-
 
 </main>
 
 <nav id="nav">
   <button data-p="home" class="on"><span class="e">🏠</span>홈</button>
-  <button data-p="mom"><span class="e">🤰</span>냠모</button>
+  <button data-p="pack"><span class="e">🎒</span>준비물</button>
+  <button data-p="life"><span class="e">🏥</span>병원생활</button>
+  <button data-p="care"><span class="e">🩺</span>회복·질문</button>
   <button data-p="log"><span class="e">🍼</span>기록</button>
   <button data-p="dad"><span class="e">💪</span>남편</button>
-  <button data-p="pack"><span class="e">🎒</span>준비물</button>
 </nav>
 <div class="toast" id="toast"></div>
 </div>
