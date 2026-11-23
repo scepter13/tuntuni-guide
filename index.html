@@ -122,6 +122,47 @@ textarea,input[type=text]{width:100%;font:inherit;font-size:18px;border:2px soli
 .phase>h3{display:flex;justify-content:space-between;align-items:center}
 .phase .cnt{font-size:14px;color:var(--sub);font-weight:700}
 .kw{background:linear-gradient(transparent 55%,var(--butter) 55%);font-weight:900}
+/* home chat */
+main.homeon{overflow:hidden;padding-bottom:calc(var(--tab) + 8px + env(safe-area-inset-bottom))}
+#p-home.on{display:flex;flex-direction:column;height:100%}
+.hero-s{padding:12px 14px 10px;margin:0 0 10px;flex:none}
+.hero-s .big{font-size:44px;margin:2px 0}
+.hero-s .lbl{font-size:16px}.hero-s .sub2{font-size:14.5px}
+.hlinks{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.hlinks>*{border:0;background:rgba(255,255,255,.75);border-radius:99px;padding:6px 14px;font:inherit;font-size:14.5px;font-weight:800;color:#C0604A;text-decoration:none;cursor:pointer}
+.chat{flex:1;min-height:0;display:flex;flex-direction:column;background:#fff;border-radius:22px;box-shadow:0 2px 0 var(--line);overflow:hidden}
+.chat-head{flex:none;display:flex;justify-content:space-between;align-items:center;padding:9px 14px;font-weight:800;font-size:16px;border-bottom:1px solid var(--line)}
+.chat-head button{border:0;background:none;font:inherit;font-size:13.5px;color:var(--sub);font-weight:700;cursor:pointer;padding:4px 6px}
+.ai-st{font-size:12px;font-weight:800;border-radius:99px;padding:2px 8px;margin-left:4px;background:var(--butter);color:#9A7B2F;vertical-align:2px}
+.ai-st.ok{background:var(--mint2);color:#2E7D62}
+.chat-log{position:relative;flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 12px 4px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.msg{display:flex;gap:8px;align-items:flex-end;max-width:100%;animation:pop .22s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg .av{flex:none;width:30px;height:30px;border-radius:50%;background:linear-gradient(160deg,var(--peach2),var(--lav2));display:flex;align-items:center;justify-content:center;font-size:17px}
+.bub{padding:10px 13px;border-radius:18px;font-size:16px;line-height:1.55;max-width:84%;overflow-wrap:anywhere}
+.msg.bot .bub{background:var(--bg);border-bottom-left-radius:6px}
+.msg.me{justify-content:flex-end}
+.msg.me .bub{background:var(--peach);color:#fff;border-bottom-right-radius:6px;white-space:pre-wrap}
+.bub p{margin:0 0 6px}.bub p:last-child{margin:0}
+.bub ul,.bub ol{margin:4px 0 6px;padding-left:20px}.bub li{margin:2px 0}
+.bub h4{margin:6px 0 4px;font-size:16px}
+.bub code{background:#F4E9E1;border-radius:6px;padding:0 4px;font-size:14px}
+.bub .srcs{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--sub)}
+.bub .srcs a{color:#B07A66;margin-right:8px;display:inline-block}
+.msg.err .bub{background:#FFF4E5}
+.typing{display:inline-flex;gap:4px;padding:4px 2px}
+.typing i{width:7px;height:7px;border-radius:50%;background:#D9B3A5;animation:tp 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes tp{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+.chat-sug{flex:none;display:flex;gap:7px;overflow-x:auto;padding:6px 12px 4px;scrollbar-width:none}
+.chat-sug::-webkit-scrollbar{display:none}
+.chat-sug button{flex:none;border:1.5px solid var(--peach2);background:#fff;border-radius:99px;padding:7px 12px;font:inherit;font-size:14.5px;font-weight:700;color:#B0604C;cursor:pointer;white-space:nowrap}
+.chat-in{flex:none;display:flex;gap:8px;align-items:flex-end;padding:8px 10px 10px;border-top:1px solid var(--line);background:#fff}
+.chat-in textarea{flex:1;resize:none;border-radius:20px;padding:9px 14px;font-size:16px;line-height:1.4;max-height:96px;min-height:42px;background:var(--bg);border:1.5px solid var(--line)}
+.chat-in textarea:focus{outline:none;border-color:var(--peach)}
+.chat-in button{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--peach);color:#fff;font-size:22px;font-weight:900;cursor:pointer}
+.chat-in button:disabled{background:#E9D9D0}
+.plan summary{background:var(--peach2);border-radius:18px}.plan[open] summary{border-radius:18px 18px 0 0}
 /* tabbar */
 nav{position:fixed;left:0;right:0;bottom:0;height:calc(var(--tab) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:rgba(255,255,255,.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;z-index:10}
 nav button{flex:1 1 0;min-width:0;padding:0 1px;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:12.5px;letter-spacing:-.4px;white-space:nowrap;font-weight:800;color:#B3A39A;font-family:inherit}
@@ -140,34 +181,21 @@ nav button.on .e{filter:none;opacity:1;transform:scale(1.1)}
 
 <!-- ================= 홈 ================= -->
 <section class="page on" id="p-home">
-  <div class="card hero">
+  <div class="card hero hero-s">
     <div class="lbl" id="h-lbl">튼튼이 만나기까지</div>
     <div class="big" id="h-big">D-7</div>
     <div class="sub2" id="h-sub">입원 11월 30일(월) · 수술 12월 1일(화)</div>
+    <div class="hlinks"><button onclick="openPlan()">🗓️ 일정 보기</button><a href="tel:0318203301">📞 분만실</a></div>
   </div>
-  <div class="today" id="h-today"></div>
-  <h2 style="margin-top:18px">🗓️ 입원부터 조리원까지</h2>
-  <p class="sm">오늘 단계는 <span class="pill peach">지금</span> · 다른 날은 탭하면 펼쳐져요.</p>
-  <div class="tl" id="timeline"></div>
-  <div class="note">⏱️ 금식 시작 시간, 소변줄 제거, 식사 시작, 퇴원일은 <b>병동 간호사·담당 교수님 안내</b>가 우선이에요. 회복 순서는 일반적인 흐름이에요.</div>
-  <div class="card">
-    <div class="row" style="justify-content:space-between"><h3>챙길 것</h3><span class="sm" id="h-ckc"></span></div>
-    <div class="bar"><i id="h-ckbar" style="width:0"></i></div>
-    <div class="grid2 mt">
-      <button class="btn" onclick="go('pack')">🎒 준비물 보기</button>
-      <button class="btn mint" onclick="go('life')">🏥 병원생활</button>
-      <button class="btn lav" onclick="go('log')">🍼 기록하기</button>
-      <button class="btn butter" onclick="go('care')">❓ 질문 메모</button>
-    </div>
+  <div class="chat">
+    <div class="chat-head"><span>💬 튼튼이 도우미 <span class="ai-st" id="ai-st"></span></span><button id="chat-clear" aria-label="대화 지우기">🗑️ 지우기</button></div>
+    <div class="chat-log" id="chat-log" aria-live="polite"></div>
+    <div class="chat-sug" id="chat-sug"></div>
+    <form class="chat-in" id="chat-form" autocomplete="off">
+      <textarea id="chat-q" rows="1" maxlength="500" placeholder="궁금한 걸 물어보세요"></textarea>
+      <button type="submit" id="chat-send" aria-label="보내기">↑</button>
+    </form>
   </div>
-  <div class="card">
-    <h3>📞 바로 전화</h3>
-    <a class="tel" href="tel:0318203301"><span>분만실</span><span>031-820-3301</span></a>
-    <a class="tel" href="tel:0318203305"><span>신생아실</span><span>031-820-3305</span></a>
-    <a class="tel" href="tel:0318539115"><span>히아신스 산후조리원</span><span>031-853-9115</span></a>
-    <a class="tel" href="tel:16617500"><span>병원 대표</span><span>1661-7500</span></a>
-  </div>
-  <div class="note">📱 <b>홈 화면에 추가</b>하면 앱처럼 쓸 수 있어요. 아이폰: 사파리 아래 <b>공유 버튼 → 홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮ → 홈 화면에 추가</b>. 체크·기록·메모는 이 휴대폰에만 저장돼요.</div>
 </section>
 
 <!-- ================= 준비물 ================= -->
@@ -185,7 +213,19 @@ nav button.on .e{filter:none;opacity:1;transform:scale(1.1)}
 <section class="page" id="p-life">
   <h1>병원 생활 정보</h1>
   <p class="sm">가톨릭대학교 의정부성모병원 안내문 내용이에요.</p>
+  <details id="plan" class="plan"><summary>🗓️ 입원부터 조리원까지 일정</summary><div class="in">
+    <p class="sm">오늘 단계는 <span class="pill peach">지금</span> · 다른 날은 탭하면 펼쳐져요.</p>
+    <div class="tl" id="timeline"></div>
+    <div class="note" style="margin:4px 0 0">⏱️ 금식 시작 시간, 소변줄 제거, 식사 시작, 퇴원일은 <b>병동 간호사·담당 교수님 안내</b>가 우선이에요.</div>
+  </div></details>
+  <details><summary>📞 바로 전화</summary><div class="in">
+    <a class="tel" href="tel:0318203301"><span>분만실</span><span>031-820-3301</span></a>
+    <a class="tel" href="tel:0318203305"><span>신생아실</span><span>031-820-3305</span></a>
+    <a class="tel" href="tel:0318539115"><span>히아신스 산후조리원</span><span>031-853-9115</span></a>
+    <a class="tel" href="tel:16617500"><span>병원 대표</span><span>1661-7500</span></a>
+  </div></details>
   <div id="life-list"></div>
+  <div class="note">📱 <b>홈 화면에 추가</b>하면 앱처럼 쓸 수 있어요. 아이폰: 사파리 <b>공유 → 홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮ → 홈 화면에 추가</b>. 체크·기록·메모·대화는 이 휴대폰에만 저장돼요.</div>
 </section>
 
 <!-- ================= 회복·질문 ================= -->

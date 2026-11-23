@@ -15,13 +15,16 @@ const dnum=(s)=>{const [y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d)
 const diff=(a,b)=>dnum(b)-dnum(a);                              // days from a to b
 const hm=(ms)=>{const d=kst(ms);return String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0')};
 const ADMIT='2026-11-30', SURG='2026-12-01';
+/* AI 프록시 주소 (Cloudflare Worker). 비어 있으면 'AI 연결 준비 중' 상태로 사이트 안 정보만 찾아줘요. */
+const AI_URL='';
 
 /* ---------- navigation ---------- */
 function go(p){
   $$('.page').forEach(e=>e.classList.toggle('on',e.id==='p-'+p));
   $$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
   $('#main').scrollTop=0;
-  if(p==='home')renderHome();
+  $('#main').classList.toggle('homeon',p==='home');
+  if(p==='home'){renderHome();chatScroll();}
 }
 window.go=go;
 $$('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
@@ -56,7 +59,6 @@ function progress(){
   const pk=packKeys(),pd=pk.filter(k=>CK[k]).length;
   const dk=dadKeys(),dd=dk.filter(k=>CK[k]).length;
   $('#pk-c').textContent=`${pd} / ${pk.length}`;$('#pk-bar').style.width=(pd/pk.length*100)+'%';
-  $('#h-ckc').textContent=`${pd} / ${pk.length} 챙김`;$('#h-ckbar').style.width=(pd/pk.length*100)+'%';
   $('#dd-c').textContent=`${dd} / ${dk.length}`;$('#dd-bar').style.width=(dd/dk.length*100)+'%';
   DAD.forEach(p=>{const ks=p.items.map(i=>'dd.'+p.id+'.'+i[0]);const n=ks.filter(k=>CK[k]).length;const el=document.querySelector(`[data-c="${p.id}"]`);if(el)el.textContent=n===ks.length?'✅ 완료':`${n}/${ks.length}`;});
 }
@@ -70,11 +72,9 @@ function renderHome(){
   else if(toS===0){lbl='오늘 수술하는 날';big='D-DAY';sub='12월 1일(화) · 신생아실 면회 오전 11:00~11:30';}
   else{lbl='튼튼이 태어난 지';big=(1-toS)+'일째';sub='2026년 12월 1일 출생';}
   $('#h-lbl').textContent=lbl;$('#h-big').textContent=big;$('#h-sub').textContent=sub;
-  let td=TODAY[t];
-  if(!td) td = toA>0 ? '오늘은 <b>준비물 체크리스트</b>를 한번 훑어보기' : '수유·기저귀·진통제는 <b>기록 탭</b>에 남겨두기';
-  $('#h-today').innerHTML='📌 <b>오늘 할 일</b><br>'+td;
-  progress();
 }
+
+window.openPlan=function(){go('life');const d=$('#plan');d.open=true;setTimeout(()=>$('#main').scrollTo({top:d.offsetTop-10,behavior:'smooth'}),30)};
 
 /* ---------- timeline ---------- */
 function renderTimeline(){
@@ -125,8 +125,100 @@ function renderLog(){
 }
 setInterval(()=>{if($('#p-log').classList.contains('on'))renderLog()},30000);
 
+
+/* ---------- AI chat ---------- */
+const CHAT_SUG=['무통주사와 페인버스터 차이?','입원 때 뭐 챙겨?','신생아실 면회 시간?','수술 후 언제 걸어?','조리원 입실 시간?','남편은 뭘 하면 돼?'];
+let CHAT=LS.get('chat',[]), busy=false;
+const strip=h=>String(h).replace(/<br\s*\/?>/g,' ').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
+function md(t){ // tiny safe markdown: escape first, then format
+  const inl=x=>esc(x).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<i>$2</i>').replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/(^|[\s(])((?:tel:)?0\d{1,2}-\d{3,4}-\d{4})/g,(m,a,n)=>a+'<a href="tel:'+n.replace(/\D/g,'')+'">'+n+'</a>');
+  const out=[];let list=null;
+  String(t).replace(/\r/g,'').split('\n').forEach(l=>{
+    let m;
+    if((m=l.match(/^\s*[-*•]\s+(.*)/))){if(list!=='ul'){if(list)out.push('</'+list+'>');out.push('<ul>');list='ul'}out.push('<li>'+inl(m[1])+'</li>');return}
+    if((m=l.match(/^\s*\d+[.)]\s+(.*)/))){if(list!=='ol'){if(list)out.push('</'+list+'>');out.push('<ol>');list='ol'}out.push('<li>'+inl(m[1])+'</li>');return}
+    if(list){out.push('</'+list+'>');list=null}
+    if((m=l.match(/^#{1,6}\s+(.*)/))){out.push('<h4>'+inl(m[1])+'</h4>');return}
+    if(l.trim())out.push('<p>'+inl(l)+'</p>');
+  });
+  if(list)out.push('</'+list+'>');
+  return out.join('');
+}
+function bubble(m){
+  if(m.r==='me')return `<div class="msg me"><div class="bub">${esc(m.t)}</div></div>`;
+  const src=(m.s&&m.s.length)?'<div class="srcs">🔎 출처 '+m.s.map(x=>`<a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.t||'링크')}</a>`).join('')+'</div>':'';
+  return `<div class="msg bot${m.e?' err':''}"><div class="av">🍼</div><div class="bub">${md(m.t)}${src}</div></div>`;
+}
+function welcome(){
+  return AI_URL? '안녕하세요 냠모님! 💛 입원·수술·회복·조리원까지 **궁금한 건 뭐든** 물어보세요.\n아래 질문을 눌러도 돼요.'
+    : '안녕하세요 냠모님! 💛 지금은 **AI 연결 준비 중**이에요.\n그동안은 질문하면 **이 사이트 안 정보**에서 찾아서 알려드릴게요.';
+}
+function chatScroll(){const l=$('#chat-log');if(!l)return;requestAnimationFrame(()=>{const me=l.querySelectorAll('.msg.me'),lm=me[me.length-1];const last=CHAT[CHAT.length-1];
+  if(!busy&&last&&last.r==='bot'&&lm)l.scrollTop=lm.offsetTop-8;else l.scrollTop=l.scrollHeight})}
+function renderChat(){
+  $('#ai-st').textContent=AI_URL?'AI':'AI 연결 준비 중';$('#ai-st').classList.toggle('ok',!!AI_URL);
+  $('#chat-log').innerHTML=bubble({r:'bot',t:welcome()})+CHAT.map(bubble).join('')+(busy?'<div class="msg bot" id="typing"><div class="av">🍼</div><div class="bub"><span class="typing"><i></i><i></i><i></i></span></div></div>':'');
+  const asked=new Set(CHAT.filter(m=>m.r==='me').map(m=>m.t));
+  $('#chat-sug').innerHTML=CHAT_SUG.filter(s=>!asked.has(s)).map(s=>`<button type="button">${esc(s)}</button>`).join('');
+  $$('#chat-sug button').forEach(b=>b.onclick=()=>ask(b.textContent));
+  $('#chat-send').disabled=busy;
+  chatScroll();
+}
+// 사이트 안 정보 검색 (AI 연결 전 대체 답변)
+function siteIndex(){
+  const ix=[];
+  TIMELINE.forEach(x=>ix.push({tab:'life',t:'🗓️ '+x.when,b:x.title+' · '+x.li.map(strip).join(' / ')}));
+  LIFE.forEach(x=>ix.push({tab:'life',t:'🏥 '+strip(x[0]),b:strip(x[1])}));
+  CARE.forEach(x=>ix.push({tab:'care',t:'🩺 '+strip(x[0]),b:strip(x[1])}));
+  const pain=document.querySelector('#p-care .pain .in');
+  if(pain)ix.push({tab:'care',t:'💉 통증 조절 (무통주사·페인버스터·엉덩이 주사)',b:'무통주사(PCA): 정맥 또는 경막외로 진통제가 계속 + 버튼 누르면 추가, 보통 수술 후 2~3일, 온몸에 작용. 페인버스터: 수술 부위 근막 아래 관으로 국소마취제, 보통 수술 후 이틀째 제거, 수술 부위만, 선별급여(본인부담 80%), 무통주사와 함께 사용 가능. 엉덩이 주사: 추가 진통제, 간호사에게 요청. 페인버스터 사용 여부·비용은 병원에 확인.'});
+  PACK.forEach(g=>ix.push({tab:'pack',t:'🎒 '+strip(g.g),b:g.items.map(i=>strip(i[1])).join(', ')}));
+  DAD.forEach(p=>ix.push({tab:'dad',t:'💪 남편 · '+strip(p.t),b:p.items.map(i=>strip(i[1])).join(' / ')}));
+  return ix;
+}
+const SYN={'챙겨':'준비물','챙길':'준비물','가져':'준비물','짐':'준비물','면회':'면회','걷':'걷기','걸어':'걷기','아기':'신생아','조리원':'조리원','남편':'남편','통증':'통증','무통':'무통주사','페인':'페인버스터','주차':'주차','밥':'식사','식사':'식사','샤워':'샤워','소변':'소변줄','입원':'입원','퇴원':'퇴원','수유':'수유'};
+function localAnswer(q){
+  const toks=new Set();
+  q.replace(/[?!.,~]/g,' ').split(/\s+/).forEach(w=>{w=w.replace(/(은|는|이|가|을|를|에|에서|도|와|과|랑|요|은요|는요|이에요|예요|해|해요|돼|돼요|뭐|어떻게|언제|차이)$/,'');if(w.length>=2)toks.add(w);Object.keys(SYN).forEach(k=>{if(w.includes(k))toks.add(SYN[k])})});
+  if(!toks.size)return null;
+  const hits=siteIndex().map(x=>{const hay=x.t+' '+x.b;let sc=0;toks.forEach(k=>{if(x.t.includes(k))sc+=3;else if(hay.includes(k))sc+=1});return{...x,sc}}).filter(x=>x.sc>0).sort((a,b)=>b.sc-a.sc).slice(0,2);
+  if(!hits.length)return null;
+  const TABN={life:'🏥 병원생활',care:'🩺 회복·질문',pack:'🎒 준비물',dad:'💪 남편'};
+  return '사이트 안에서 찾아봤어요 👇\n'+hits.map(h=>`**${h.t}**\n${h.b.length>220?h.b.slice(0,220)+'…':h.b}\n→ ${TABN[h.tab]} 탭에서 자세히 보기`).join('\n')+'\n\n*AI가 연결되면 더 자연스럽게 답해드릴게요.*';
+}
+async function ask(q){
+  q=String(q||'').trim().slice(0,500);if(!q||busy)return;
+  CHAT.push({r:'me',t:q});busy=true;renderChat();LS.set('chat',CHAT.slice(-60));
+  let ans;
+  if(!AI_URL){
+    await new Promise(r=>setTimeout(r,500));
+    ans={r:'bot',t:localAnswer(q)||'아직 AI 연결 준비 중이라 그 질문엔 답하기 어려워요 🙏\n급한 증상(출혈이 많음, 열, 숨이 참)이면 바로 **간호사 호출** 또는 분만실 031-820-3301로 전화하세요.'};
+  }else{
+    try{
+      const hist=CHAT.slice(0,-1).slice(-8).map(m=>({role:m.r==='me'?'user':'model',text:m.t.slice(0,800)}));
+      const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),45000);
+      const r=await fetch(AI_URL,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({q,history:hist}),signal:ctl.signal});
+      clearTimeout(to);
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok||!d.answer)throw new Error(d.error||('HTTP '+r.status));
+      ans={r:'bot',t:d.answer,s:(d.sources||[]).slice(0,4).map(x=>({t:x.title,u:x.uri})).filter(x=>/^https?:/.test(x.u))};
+    }catch(e){
+      const la=localAnswer(q);
+      ans={r:'bot',e:true,t:(String(e.message).includes('429')||String(e.message).includes('많')?'질문이 잠깐 많았어요. 1분 뒤에 다시 물어봐 주세요 🙏':'AI 연결이 잠깐 안 돼요 🙏 잠시 후 다시 시도해 주세요.')+(la?'\n\n'+la:'')};
+    }
+  }
+  busy=false;CHAT.push(ans);LS.set('chat',CHAT.slice(-60));renderChat();
+}
+$('#chat-form').onsubmit=e=>{e.preventDefault();const t=$('#chat-q');const v=t.value;t.value='';t.style.height='';ask(v)};
+$('#chat-q').addEventListener('input',function(){this.style.height='';this.style.height=Math.min(this.scrollHeight,96)+'px'});
+$('#chat-q').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();$('#chat-form').requestSubmit()}});
+$('#chat-clear').onclick=()=>{if(!CHAT.length||!confirm('대화를 모두 지울까요?'))return;CHAT=[];LS.set('chat',CHAT);renderChat()};
+window.TT_ASK=ask;
+
 /* ---------- init ---------- */
-renderPack();renderDad();renderTimeline();renderLife();renderQ();renderLog();renderHome();
+renderPack();renderDad();renderTimeline();renderLife();renderQ();renderLog();renderHome();progress();renderChat();$('#main').classList.add('homeon');
 const h=location.hash.replace('#','');if(['home','pack','life','care','log','dad'].includes(h))go(h);
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
